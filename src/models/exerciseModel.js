@@ -63,7 +63,7 @@ export const createExerciseModel = (database) => ({
       params.push(filters.to);
     }
 
-    query += " ORDER BY id";
+    query += " ORDER BY date_key ASC, id ASC";
 
     if (filters.limit !== undefined && filters.limit !== null) {
       query += " LIMIT ?";

@@ -17,11 +17,13 @@ export const parsePositiveInteger = (value, fieldName) => {
     throw badRequest(`${fieldName} is required`);
   }
 
-  if (!/^\d+$/.test(normalizedValue.trim())) {
+  const trimmedValue = normalizedValue.trim();
+
+  if (!/^[-+]?\d+$/.test(trimmedValue)) {
     throw badRequest(`${fieldName} must be an integer`);
   }
 
-  const number = Number(normalizedValue);
+  const number = Number(trimmedValue);
 
   if (!Number.isSafeInteger(number) || number <= 0) {
     throw badRequest(`${fieldName} must be a positive integer`);
