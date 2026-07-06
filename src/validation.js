@@ -3,6 +3,7 @@ const DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
 export function badRequest(message) {
   const error = new Error(message)
   error.statusCode = 400
+
   return error
 }
 

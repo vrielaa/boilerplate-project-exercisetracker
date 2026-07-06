@@ -13,6 +13,7 @@ export class ExerciseStore {
 
   findUser(id) {
     const user = this.data.users.find((candidate) => candidate._id === String(id))
+
     return user ? publicUser(user) : null
   }
 
@@ -62,10 +63,12 @@ export class ExerciseStore {
     if (!fs.existsSync(this.filePath)) {
       const emptyStore = createEmptyStore()
       fs.writeFileSync(this.filePath, JSON.stringify(emptyStore, null, 2))
+
       return emptyStore
     }
 
     const parsedStore = JSON.parse(fs.readFileSync(this.filePath, 'utf8'))
+
     return normalizeStore(parsedStore)
   }
 
@@ -117,6 +120,7 @@ function nextId(candidate, records) {
   const numericCandidate = Number(candidate)
   const largestId = records.reduce((largest, record) => {
     const id = Number(record._id)
+
     return Number.isSafeInteger(id) && id > largest ? id : largest
   }, 0)
 
