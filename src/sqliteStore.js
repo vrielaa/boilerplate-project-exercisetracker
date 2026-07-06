@@ -20,7 +20,7 @@ export class ExerciseStore {
     await database.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL
+        username TEXT NOT NULL UNIQUE
       )
     `)
     await database.exec(`
@@ -69,6 +69,19 @@ export class ExerciseStore {
     return user ? publicUser(user) : null
   }
 
+  async findUserByUsername(username) {
+    const user = await this.database.get(
+      `
+        SELECT id, username
+        FROM users
+        WHERE username = ?
+      `,
+      username,
+    )
+
+    return user ? publicUser(user) : null
+  }
+
   async createUser(username) {
     const result = await this.database.run(
       `
@@ -96,8 +109,8 @@ export class ExerciseStore {
     )
 
     return {
-      _id: String(result.lastID),
-      userId: String(userId),
+      id: result.lastID,
+      userId: Number(userId),
       description: exerciseInput.description,
       duration: exerciseInput.duration,
       dateKey: exerciseInput.dateKey,
@@ -171,14 +184,14 @@ export class ExerciseStore {
 
 function publicUser(user) {
   return {
+    id: user.id,
     username: user.username,
-    _id: String(user.id),
   }
 }
 
 function publicExercise(exercise) {
   return {
-    _id: String(exercise.id),
+    id: exercise.id,
     description: exercise.description,
     duration: exercise.duration,
     dateKey: exercise.dateKey,

@@ -36,6 +36,12 @@ app.get("/", (req, res) => {
 app.post("/api/users", async (req, res, next) => {
   try {
     const username = parseRequiredText(req.body.username, "username");
+    const existingUser = await store.findUserByUsername(username);
+
+    if (existingUser) {
+      throw badRequest("username already exists");
+    }
+
     const user = await store.createUser(username);
 
     res.json(user);
@@ -60,7 +66,7 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
     const exerciseDate =
       parseDateParam(req.body.date, "date") || formatExerciseDate(new Date());
 
-    await store.addExercise(user._id, {
+    const exercise = await store.addExercise(user.id, {
       description,
       duration,
       dateKey: exerciseDate.key,
@@ -68,11 +74,11 @@ app.post("/api/users/:_id/exercises", async (req, res, next) => {
     });
 
     res.json({
-      username: user.username,
-      description,
-      duration,
-      date: exerciseDate.value,
-      _id: user._id,
+      userId: user.id,
+      exerciseId: exercise.id,
+      duration: exercise.duration,
+      description: exercise.description,
+      date: exercise.date,
     });
   } catch (error) {
     next(error);
@@ -90,7 +96,7 @@ app.get("/api/users/:_id/logs", async (req, res, next) => {
       throw badRequest("from must be on or before to");
     }
 
-    const { count, exercises } = await store.listExercisesForUser(user._id, {
+    const { count, exercises } = await store.listExercisesForUser(user.id, {
       from: from?.key,
       to: to?.key,
       limit,
@@ -98,9 +104,10 @@ app.get("/api/users/:_id/logs", async (req, res, next) => {
 
     res.json({
       username: user.username,
+      id: user.id,
       count,
-      _id: user._id,
-      log: exercises.map((exercise) => ({
+      logs: exercises.map((exercise) => ({
+        id: exercise.id,
         description: exercise.description,
         duration: exercise.duration,
         date: exercise.date,

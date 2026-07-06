@@ -4,13 +4,12 @@
 <head>
   <title>Exercise Tracker</title>
   <link rel="shortcut icon" href="https://cdn.freecodecamp.org/universal/favicons/favicon.ico" type="image/x-icon" />
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
   <div class="container">
     <h1>Exercise tracker</h1>
-    <form action="/api/users" method="post">
+    <form action="/api/users" id="user-form" method="post">
       <h2>Create a New User</h2>
       <p><code>POST /api/users</code></p>
       <input id="uname" type="text" name="username" placeholder="username" />
@@ -19,18 +18,30 @@
     <form action="/api/users/:_id/exercises" id="exercise-form" method="post">
       <h2>Add exercises</h2>
       <p><code>POST /api/users/:_id/exercises</code></p>
-      <input id="uid" type="text" name=":_id" placeholder=":_id" />
+      <input id="uid" type="text" name=":_id" placeholder="id" />
       <input id="desc" type="text" name="description" placeholder="description*" />
       <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" />
       <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" />
       <input type="submit" value="Submit" />
     </form>
-    <p>
-      <strong>GET user's exercise log: </strong>
-      <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
-    </p>
-    <p><strong>[ ]</strong> = optional</p>
-    <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+    <form action="/api/users" id="users-form" method="get">
+      <h2>Get all users</h2>
+      <p><code>GET /api/users</code></p>
+      <input type="submit" value="Load users" />
+    </form>
+    <form action="/api/users/:_id/logs" id="logs-form" method="get">
+      <h2>Get user's exercise log</h2>
+      <p><code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code></p>
+      <input id="log-user-id" type="text" name="id" placeholder="id" />
+      <input id="from" type="text" name="from" placeholder="from (yyyy-mm-dd)" />
+      <input id="to" type="text" name="to" placeholder="to (yyyy-mm-dd)" />
+      <input id="limit" type="text" name="limit" placeholder="limit" />
+      <input type="submit" value="Load log" />
+    </form>
+    <section class="output-panel">
+      <h2>Response</h2>
+      <pre id="api-output">{}</pre>
+    </section>
   </div>
   <script src="/form.js"></script>
 </body>
