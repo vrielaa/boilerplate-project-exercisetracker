@@ -4,7 +4,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import { ExerciseStore } from "./src/fileStore.js";
+import { ExerciseStore } from "./src/sqliteStore.js";
 import {
   badRequest,
   formatExerciseDate,
@@ -20,8 +20,8 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
-const store = new ExerciseStore(
-  path.join(__dirname, "data", "exercise-tracker.json"),
+const store = await ExerciseStore.create(
+  path.join(__dirname, "data", "exercise-tracker.sqlite"),
 );
 
 app.use(cors());
@@ -33,10 +33,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 });
 
-app.post("/api/users", (req, res, next) => {
+app.post("/api/users", async (req, res, next) => {
   try {
     const username = parseRequiredText(req.body.username, "username");
-    const user = store.createUser(username);
+    const user = await store.createUser(username);
 
     res.json(user);
   } catch (error) {
@@ -44,23 +44,23 @@ app.post("/api/users", (req, res, next) => {
   }
 });
 
-app.get("/api/users", (req, res, next) => {
+app.get("/api/users", async (req, res, next) => {
   try {
-    res.json(store.listUsers());
+    res.json(await store.listUsers());
   } catch (error) {
     next(error);
   }
 });
 
-app.post("/api/users/:_id/exercises", (req, res, next) => {
+app.post("/api/users/:_id/exercises", async (req, res, next) => {
   try {
-    const user = getUserOrFail(req.params._id);
+    const user = await getUserOrFail(req.params._id);
     const description = parseRequiredText(req.body.description, "description");
     const duration = parsePositiveInteger(req.body.duration, "duration");
     const exerciseDate =
       parseDateParam(req.body.date, "date") || formatExerciseDate(new Date());
 
-    store.addExercise(user._id, {
+    await store.addExercise(user._id, {
       description,
       duration,
       dateKey: exerciseDate.key,
@@ -79,9 +79,9 @@ app.post("/api/users/:_id/exercises", (req, res, next) => {
   }
 });
 
-app.get("/api/users/:_id/logs", (req, res, next) => {
+app.get("/api/users/:_id/logs", async (req, res, next) => {
   try {
-    const user = getUserOrFail(req.params._id);
+    const user = await getUserOrFail(req.params._id);
     const from = parseDateParam(req.query.from, "from");
     const to = parseDateParam(req.query.to, "to");
     const limit = parseLimitParam(req.query.limit);
@@ -90,20 +90,17 @@ app.get("/api/users/:_id/logs", (req, res, next) => {
       throw badRequest("from must be on or before to");
     }
 
-    const matchingExercises = store
-      .listExercisesForUser(user._id)
-      .filter((exercise) => !from || exercise.dateKey >= from.key)
-      .filter((exercise) => !to || exercise.dateKey <= to.key);
-
-    const count = matchingExercises.length;
-    const visibleExercises =
-      limit === null ? matchingExercises : matchingExercises.slice(0, limit);
+    const { count, exercises } = await store.listExercisesForUser(user._id, {
+      from: from?.key,
+      to: to?.key,
+      limit,
+    });
 
     res.json({
       username: user.username,
       count,
       _id: user._id,
-      log: visibleExercises.map((exercise) => ({
+      log: exercises.map((exercise) => ({
         description: exercise.description,
         duration: exercise.duration,
         date: exercise.date,
@@ -130,8 +127,8 @@ app.use((error, req, res, next) => {
   });
 });
 
-function getUserOrFail(id) {
-  const user = store.findUser(id);
+async function getUserOrFail(id) {
+  const user = await store.findUser(id);
 
   if (!user) {
     const error = new Error("User not found");
