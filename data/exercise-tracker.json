@@ -1,6 +1,112 @@
 {
-  "nextUserId": 1,
-  "nextExerciseId": 1,
-  "users": [],
-  "exercises": []
+  "nextUserId": 5,
+  "nextExerciseId": 12,
+  "users": [
+    {
+      "_id": "1",
+      "username": "gaba"
+    },
+    {
+      "_id": "2",
+      "username": "fcc_test_17833299201"
+    },
+    {
+      "_id": "3",
+      "username": "fcc_test_17833299219"
+    },
+    {
+      "_id": "4",
+      "username": "fcc_test_17833299220"
+    }
+  ],
+  "exercises": [
+    {
+      "_id": "1",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "1990-01-01",
+      "date": "Mon Jan 01 1990"
+    },
+    {
+      "_id": "2",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "1990-01-01",
+      "date": "Mon Jan 01 1990"
+    },
+    {
+      "_id": "3",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "4",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "5",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "6",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "7",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "8",
+      "userId": "3",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "9",
+      "userId": "4",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "2026-07-06",
+      "date": "Mon Jul 06 2026"
+    },
+    {
+      "_id": "10",
+      "userId": "4",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "1990-01-01",
+      "date": "Mon Jan 01 1990"
+    },
+    {
+      "_id": "11",
+      "userId": "4",
+      "description": "test",
+      "duration": 60,
+      "dateKey": "1990-01-03",
+      "date": "Wed Jan 03 1990"
+    }
+  ]
 }
