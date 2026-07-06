@@ -18,12 +18,6 @@ export class ExerciseStore {
   }
 
   createUser(username) {
-    const existingUser = this.data.users.find((user) => user.username === username)
-
-    if (existingUser) {
-      return publicUser(existingUser)
-    }
-
     const user = {
       _id: String(this.data.nextUserId),
       username,
