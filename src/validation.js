@@ -37,14 +37,24 @@ export const parseLimitParam = (value) => {
     return null;
   }
 
-  if (typeof value !== "string" || !/^\d+$/.test(value.trim())) {
+  if (typeof value !== "string") {
     throw badRequest("limit must be an integer");
   }
 
-  const limit = Number(value);
+  const trimmedValue = value.trim();
+
+  if (!/^[-+]?\d+$/.test(trimmedValue)) {
+    throw badRequest("limit must be an integer");
+  }
+
+  const limit = Number(trimmedValue);
 
   if (!Number.isSafeInteger(limit)) {
     throw badRequest("limit must be a safe integer");
+  }
+
+  if (limit < 0) {
+    throw badRequest("limit must be a non-negative integer");
   }
 
   return limit;
